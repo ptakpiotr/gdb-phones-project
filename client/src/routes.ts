@@ -1,7 +1,9 @@
 import Home from "./pages/Home";
+import People from "./pages/People";
+import Person from "./pages/Person";
 import Phone from "./pages/Phone";
 import Phones from "./pages/Phones";
-import { FiHome, FiPhone } from "react-icons/fi";
+import { FiHome, FiPhone, FiUser } from "react-icons/fi";
 export default [
   {
     icon: FiHome,
@@ -18,9 +20,28 @@ export default [
     showInMenu: true,
   },
   {
+    icon: FiUser,
+    path: "/people",
+    description: "People",
+    Component: People,
+    showInMenu: true,
+  },
+  {
     path: "/phone/:id",
     description: "Phone",
     Component: Phone,
     showInMenu: false,
   },
-];
+  {
+    path: "/person",
+    description: "Person",
+    Component: Person,
+    showInMenu: false,
+  },
+  {
+    path: "*",
+    description: "NotFound",
+    Component: Person,
+    showInMenu: false,
+  },
+] as const;

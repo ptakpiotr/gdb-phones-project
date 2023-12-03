@@ -3,36 +3,44 @@ import {
   CardBody,
   CardFooter,
   Button,
-  Image,
   Text,
   Box,
 } from "@chakra-ui/react";
 import { FiLink } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { Phone } from "../../../common/validation";
+import { Person } from "../../../common/Types";
+import { FiUser } from "react-icons/fi";
 
-type Props = Phone;
+type Props = Person;
 
-function PhoneCard({ id, make, model, image }: Props) {
+function PhoneCard({ name, surname }: Props) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/phone/${id}`);
+    navigate(`/person?name=${name}&surname=${surname}`);
   };
 
   return (
     <Box flex="1" padding="0.25rem" margin="0.1rem">
-      <Card maxWidth="15rem" display="flex" alignItems="center">
+      <Card
+        maxWidth="15rem"
+        display="flex"
+        alignItems="center"
+        background="darkolivegreen"
+        color="whitesmoke"
+      >
         <CardBody>
-          <Image src={image} alt={`${id}`} maxWidth="10rem" />
+          <Box fontSize="48">
+            <FiUser />
+          </Box>
           <Text textAlign="center">
-            {make} {model}
+            {name} {surname}
           </Text>
         </CardBody>
         <CardFooter>
           <Button
             variant="solid"
-            colorScheme="teal"
+            colorScheme="twitter"
             rightIcon={<FiLink />}
             onClick={handleClick}
           >

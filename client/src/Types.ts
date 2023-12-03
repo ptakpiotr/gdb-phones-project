@@ -1,12 +1,6 @@
 import type { IconType } from "react-icons";
 import type { ButtonProps } from "@chakra-ui/react";
-export interface IPhoneInfoShort {
-  id: string;
-  description: string;
-  image: string;
-}
-
-export interface IPhoneInfo extends IPhoneInfoShort {}
+import { Phone } from "../../common/validation";
 
 export interface IOptionalButton {
   text: string;
@@ -15,15 +9,20 @@ export interface IOptionalButton {
   onClick: () => void;
 }
 
+export type PhoneShort = Required<Pick<Phone, "id" | "make" | "model">>;
+
 export enum Drawers {
   PHONE,
   PERSON,
 }
 
-export interface IPhoneDrawer {
+export enum FilterPanels {
+  PHONE,
+  PERSON,
+}
+
+export interface IPhoneDrawer extends Phone {
   type: Drawers.PHONE;
-  description: string;
-  image: string;
 }
 
 export interface IPersonDrawer {
@@ -31,4 +30,31 @@ export interface IPersonDrawer {
   firstName: string;
   lastName: string;
   avatar: string;
+}
+
+type FilterInput<T> = {
+  [n in keyof T]: {
+    name: n;
+    value: T[n];
+  };
+};
+
+type FilterInputUnion<T> = {
+  [n in keyof T as "filters"]: T[n];
+};
+
+export type PhoneFilterInputPanel = {
+  type: FilterPanels.PHONE;
+  filters: FilterInputUnion<
+    FilterInput<Omit<Phone, "description" | "image" | "type" | "id">>
+  >["filters"][];
+};
+
+export type PersonFilterInputPanel = {
+  type: FilterPanels.PERSON;
+  filters: FilterInputUnion<FilterInput<IPersonDrawer>>["filters"][];
+};
+
+export interface IFilterInputPanel {
+  filterPanel?: PhoneFilterInputPanel | PersonFilterInputPanel;
 }

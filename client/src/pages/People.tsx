@@ -4,13 +4,13 @@ import { effect } from "@preact/signals-react";
 import { FiPlus } from "react-icons/fi";
 import { isLoading, optionalBreadCrumbButton, isDrawerOpen } from "../signals";
 
-import PhoneCard from "../components/PhoneCard";
 import AddDrawer from "../components/AddDrawer";
 import { Drawers } from "../Types";
 import { trpc } from "../App";
+import PersonCard from "../components/PersonCard";
 
-function Phones() {
-  const getPhones = trpc.getPhones.useQuery();
+function People() {
+  const getPhones = trpc.getPeople.useQuery();
 
   effect(() => {
     if (!getPhones.isError && getPhones.data) {
@@ -28,11 +28,11 @@ function Phones() {
 
   return (
     <>
-      <AddDrawer type={Drawers.PHONE} />
+      <AddDrawer type={Drawers.PERSON} />
       {!isLoading.value ? (
         <Box display="flex" flexWrap="wrap" flexDirection="row">
           {getPhones.data?.map((p) => (
-            <PhoneCard key={p.id} {...p} />
+            <PersonCard key={p.id} {...p} />
           ))}
         </Box>
       ) : (
@@ -42,4 +42,4 @@ function Phones() {
   );
 }
 
-export default Phones;
+export default People;
