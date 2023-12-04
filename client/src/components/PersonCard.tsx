@@ -21,9 +21,10 @@ function PhoneCard({ name, surname }: Props) {
   };
 
   return (
-    <Box flex="1" padding="0.25rem" margin="0.1rem">
+    <Box padding="0.25rem" margin="0.1rem">
       <Card
-        maxWidth="15rem"
+        minWidth="15rem"
+        maxWidth="20rem"
         display="flex"
         alignItems="center"
         background="darkolivegreen"

@@ -58,3 +58,11 @@ export type PersonFilterInputPanel = {
 export interface IFilterInputPanel {
   filterPanel?: PhoneFilterInputPanel | PersonFilterInputPanel;
 }
+
+export interface IMenuRoute {
+  icon?: IconType;
+  path: string;
+  description: string;
+  Component: (params: any) => JSX.Element;
+  showInMenu?: true;
+}

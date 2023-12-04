@@ -49,6 +49,11 @@ export const editPhoneInputSchema = yup.object({
   id: yup.string().required(),
 });
 
+export const getBoughtPhonesSchema = yup.object({
+  name: yup.string().required(),
+  surname: yup.string().required(),
+});
+
 export type Phone = yup.InferType<typeof phoneSchema>;
 export type Owned = yup.InferType<typeof buySchema>;
 export type PhoneBasic = yup.InferType<typeof phoneBasicSchema>;

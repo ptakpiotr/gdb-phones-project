@@ -1,8 +1,8 @@
 import { driver } from "..";
 import { Owned, Phone } from "../../common/validation";
 import { Person, Review } from "../../common/Types";
-import type { Integer, Node, Relationship } from "neo4j-driver";
-import { RNode } from "../Types";
+import type { Integer, Node } from "neo4j-driver";
+import { IPhonePriceRelationship, RNode } from "../Types";
 
 const getSingleNodeType = async <
   T extends {},
@@ -20,6 +20,35 @@ const getSingleNodeType = async <
       id: r.get(nodeReturnName).elementId,
     }));
     return res;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await session.close();
+  }
+};
+
+const getDoubleNodeType = async <
+  R extends {},
+  T extends R,
+  TNode extends { [key: string]: Node<Integer, T> }
+>(
+  query: string,
+  tNodeReturnName: string,
+  rNodeReturnName: string
+) => {
+  const session = driver.session();
+  try {
+    const { records } = await session.executeRead((tx) => tx.run<TNode>(query));
+
+    const recs: T[] = records.map((r) => {
+      return {
+        ...r.get(tNodeReturnName).properties,
+        ...r.get(rNodeReturnName).properties,
+        id: r.get(tNodeReturnName).elementId,
+      };
+    });
+
+    return recs;
   } catch (err) {
     console.error(err);
   } finally {
@@ -126,6 +155,21 @@ const editNode = async <T extends {}>(query: string, obj: T) => {
   }
 };
 
+const deleteRelationship = async <T extends {}>(query: string, params: T) => {
+  const session = driver.session();
+  try {
+    await session.executeWrite((tx) => {
+      tx.run(query, params);
+    });
+
+    return true;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await session.close();
+  }
+};
+
 export const getPhones = async () => {
   return await getSingleNodeType<Phone, { p: Node<Integer, Phone> }>(
     "MATCH(p:PHONE) RETURN p",
@@ -179,7 +223,7 @@ export const getAllUserReviews = async (p: Person) => {
 export const addPhoneBuy = async (o: Owned) => {
   return await addNodeWithRelationshipsBothExisting(
     `MATCH(p:PERSON{name:$name, surname:$surname}) MATCH(ph:PHONE{make:$make,model:$model})
-     CREATE(p)-[:OWNED{price:$price}]->(ph)
+     CREATE(p)-[:HAS_BOUGHT{price:$price}]->(ph)
      RETURN p;`,
     o.person,
     {
@@ -210,5 +254,34 @@ export const editSinglePhone = async (ph: Phone) => {
     RETURN p
   `,
     ph as Omit<Phone, "id">
+  );
+};
+
+export const getBoughtPhones = async (
+  personName: string,
+  personSurname: string
+) => {
+  return await getDoubleNodeType<
+    Phone,
+    IPhonePriceRelationship,
+    { ph: Node<Integer, IPhonePriceRelationship> }
+  >(
+    `
+    MATCH(:PERSON{name:"${personName}",surname:"${personSurname}"})-[h:HAS_BOUGHT]->(ph:PHONE)
+    RETURN h, ph;`,
+    "ph",
+    "h"
+  );
+};
+
+export const deleteBoughtPhone = async (person: Person) => {
+  return await deleteRelationship(
+    `
+    MATCH(:PERSON{name:$name, surname: $surname})-[h:HAS_BOUGHT]->(ph)
+    WHERE ELEMENTID(ph) = $id
+    DELETE h
+    RETURN h;
+  `,
+    person
   );
 };

@@ -42,7 +42,7 @@ function PhoneInfo({ ph }: { ph?: Phone[] }) {
     try {
       const editValidate = await editPhoneSchema.validate(editPhoneData.value);
       await mutate(editValidate);
-      queryClient.refetchQueries();
+      await queryClient.refetchQueries();
 
       res = true;
     } catch (err: unknown) {

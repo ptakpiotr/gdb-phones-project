@@ -1,9 +1,11 @@
+import { IMenuRoute } from "./Types";
+import About from "./pages/About";
 import Home from "./pages/Home";
 import People from "./pages/People";
 import Person from "./pages/Person";
 import Phone from "./pages/Phone";
 import Phones from "./pages/Phones";
-import { FiHome, FiPhone, FiUser } from "react-icons/fi";
+import { FiHome, FiPhone, FiUser, FiInfo } from "react-icons/fi";
 export default [
   {
     icon: FiHome,
@@ -44,4 +46,11 @@ export default [
     Component: Person,
     showInMenu: false,
   },
-] as const;
+  {
+    icon: FiInfo,
+    path: "/about",
+    description: "About",
+    Component: About,
+    showInMenu: true,
+  },
+] as IMenuRoute[];

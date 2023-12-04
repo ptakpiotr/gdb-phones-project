@@ -30,7 +30,7 @@ function People() {
     <>
       <AddDrawer type={Drawers.PERSON} />
       {!isLoading.value ? (
-        <Box display="flex" flexWrap="wrap" flexDirection="row">
+        <Box display="flex" flexWrap="wrap" flexDirection="row" maxWidth="90vw">
           {getPhones.data?.map((p) => (
             <PersonCard key={p.id} {...p} />
           ))}

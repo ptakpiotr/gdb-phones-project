@@ -21,6 +21,7 @@ import {
 } from "../../../common/validation";
 import { FiSave } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
+import PurchaseTable from "../components/PurchaseTable";
 
 const showDialog = signal<boolean>(false);
 const owned = signal<Partial<Owned>>({});
@@ -71,7 +72,10 @@ function Person() {
       const buyValidate = await buySchema.validate(owned.value);
       await mutate(buyValidate);
 
-      queryClient.resetQueries();
+      await queryClient.refetchQueries();
+
+      //bypass
+      window.location.reload();
 
       showDialog.value = false;
       res = true;
@@ -132,13 +136,29 @@ function Person() {
       </Drawer>
       <Box display="flex" flexDirection="column">
         <Text>Person' reviews</Text>
-        <Box display="flex" flexDirection="row" flexWrap="wrap">
-          {isLoading ? (
-            <Spinner />
-          ) : data ? (
-            <ReviewInfo reviews={data.r!} phones={data.s!} onClick={onClick} />
+        <Box display="flex" flexDirection="column">
+          <Box display="flex" flexDirection="row" flexWrap="wrap" flex={1}>
+            {isLoading ? (
+              <Spinner />
+            ) : data ? (
+              <ReviewInfo
+                reviews={data.r!}
+                phones={data.s!}
+                onClick={onClick}
+              />
+            ) : (
+              <>An error has occured</>
+            )}
+          </Box>
+          {name && surname ? (
+            <>
+              <Text>Person' purchases</Text>
+              <Box display="flex" flexDirection="row" flexWrap="wrap" flex={1}>
+                <PurchaseTable name={name} surname={surname} />
+              </Box>
+            </>
           ) : (
-            <>An error has occured</>
+            <></>
           )}
         </Box>
       </Box>

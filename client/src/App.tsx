@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import routes from "./routes";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import { Box } from "@chakra-ui/react";
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
@@ -9,8 +8,6 @@ import AppOutlet from "./AppOutlet";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import type { AppRouter } from "../../server/routers/appRouter";
 import { useState } from "react";
-import { effect } from "@preact/signals-react";
-import { phoneInfo } from "./signals";
 
 export const trpc = createTRPCReact<AppRouter>();
 
@@ -41,7 +38,6 @@ function App() {
               </Route>
             </Routes>
           </Box>
-          <Footer />
         </BrowserRouter>
       </QueryClientProvider>
     </trpc.Provider>

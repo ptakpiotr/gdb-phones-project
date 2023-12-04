@@ -32,7 +32,7 @@ function AppMenu() {
           .map((r) => (
             <MenuItem
               key={r.path}
-              icon={<>{r.icon()}</>}
+              icon={<>{r.icon ? r.icon({}) : <></>}</>}
               bgColor={r.path === location.pathname ? "main.200" : "main.100"}
               color="text.100"
               as={Link}
