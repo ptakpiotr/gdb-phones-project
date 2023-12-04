@@ -1,7 +1,7 @@
 import { driver } from "..";
 import { Owned, Phone } from "../../common/validation";
 import { Person, Review } from "../../common/Types";
-import type { Integer, Node } from "neo4j-driver";
+import type { Integer, ManagedTransaction, Node } from "neo4j-driver";
 import { IPhonePriceRelationship, RNode } from "../Types";
 
 const getSingleNodeType = async <
@@ -13,7 +13,9 @@ const getSingleNodeType = async <
 ) => {
   const session = driver.session();
   try {
-    const { records } = await session.executeRead((tx) => tx.run<TNode>(query));
+    const { records } = await session.executeRead((tx: ManagedTransaction) =>
+      tx.run<TNode>(query)
+    );
 
     const res: T[] = records.map((r) => ({
       ...r.get(nodeReturnName).properties,
@@ -38,7 +40,9 @@ const getDoubleNodeType = async <
 ) => {
   const session = driver.session();
   try {
-    const { records } = await session.executeRead((tx) => tx.run<TNode>(query));
+    const { records } = await session.executeRead((tx: ManagedTransaction) =>
+      tx.run<TNode>(query)
+    );
 
     const recs: T[] = records.map((r) => {
       return {
@@ -62,7 +66,7 @@ const getFullRelationship = async <T extends {}, U extends {}, V extends {}>(
 ) => {
   const session = driver.session();
   try {
-    const { records } = await session.executeRead((tx) =>
+    const { records } = await session.executeRead((tx: ManagedTransaction) =>
       tx.run<RNode<T, U, V>>(query, filter)
     );
 
@@ -89,7 +93,9 @@ const getFullRelationship = async <T extends {}, U extends {}, V extends {}>(
 const addNode = async <T>(query: string, p: T) => {
   const session = driver.session();
   try {
-    await session.executeWrite((tx) => tx.run(query, { ...p }));
+    await session.executeWrite((tx: ManagedTransaction) =>
+      tx.run(query, { ...p })
+    );
 
     return true;
   } catch (err) {
@@ -107,7 +113,9 @@ const addNodeWithRelationshipExisting = async <T extends {}>(
 ) => {
   const session = driver.session();
   try {
-    await session.executeWrite((tx) => tx.run(query, { ...params }));
+    await session.executeWrite((tx: ManagedTransaction) =>
+      tx.run(query, { ...params })
+    );
 
     return true;
   } catch (err) {
@@ -126,7 +134,7 @@ const addNodeWithRelationshipsBothExisting = async <T extends {}, R extends {}>(
 ) => {
   const session = driver.session();
   try {
-    await session.executeWrite((tx) =>
+    await session.executeWrite((tx: ManagedTransaction) =>
       tx.run(query, { ...paramsFrom, ...paramsTo })
     );
 
@@ -143,7 +151,7 @@ const addNodeWithRelationshipsBothExisting = async <T extends {}, R extends {}>(
 const editNode = async <T extends {}>(query: string, obj: T) => {
   const session = driver.session();
   try {
-    await session.executeWrite((tx) => {
+    await session.executeWrite((tx: ManagedTransaction) => {
       tx.run(query, obj);
     });
 
@@ -158,7 +166,7 @@ const editNode = async <T extends {}>(query: string, obj: T) => {
 const deleteRelationship = async <T extends {}>(query: string, params: T) => {
   const session = driver.session();
   try {
-    await session.executeWrite((tx) => {
+    await session.executeWrite((tx: ManagedTransaction) => {
       tx.run(query, params);
     });
 

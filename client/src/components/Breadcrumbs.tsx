@@ -14,7 +14,7 @@ function Breadcrumbs() {
   const locPath = [...new Set(location.pathname.split("/"))];
 
   const breadcrumbsPath = useMemo(() => {
-    const paths = [];
+    const paths: { path: string; page: string }[] = [];
     for (let i = 0; i < locPath.length; i++) {
       let path = "/";
 

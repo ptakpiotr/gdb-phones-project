@@ -6,7 +6,6 @@ import {
   List,
   ListIcon,
   ListItem,
-  Text,
 } from "@chakra-ui/react";
 import {
   SiNeo4J,

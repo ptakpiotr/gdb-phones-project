@@ -11,6 +11,11 @@ export interface IOptionalButton {
 
 export type PhoneShort = Required<Pick<Phone, "id" | "make" | "model">>;
 
+export interface IPhoneInfoShort extends PhoneShort {
+  description: string;
+  image: string;
+}
+
 export enum Drawers {
   PHONE,
   PERSON,

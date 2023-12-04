@@ -16,7 +16,9 @@ function App() {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:5000/trpc",
+          url:
+            import.meta.env.REACT_APP_BACKEND_URL ??
+            "http://localhost:5000/trpc",
         }),
       ],
     })
