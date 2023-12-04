@@ -24,7 +24,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: gdb-project   # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: 'server'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: '/server'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '16.x'                # set this to the node version to use
 
 permissions:
@@ -35,6 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+        path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
