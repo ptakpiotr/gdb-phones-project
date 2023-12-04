@@ -12,9 +12,9 @@ param sku string = 'F1'
 @maxLength(30)
 param webSiteName string = 'gdb-project'
 
-@allowed([ 'NODE|16-lts', 'NODE|14-lts' ])
+@allowed([ 'NODE|16-lts', 'NODE|18-lts' ])
 @description('Version of the linux runtime')
-param linuxVer string = 'NODE|16-lts'
+param linuxVer string = 'NODE|18-lts'
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
