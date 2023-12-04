@@ -1,40 +1,67 @@
-@description('Name of the app service plan')
-param appServicePlanName string = 'gdb-project-appservice'
-
 @description('Location of the resource')
 param location string = resourceGroup().location
 
-@allowed([ 'F1' ])
-@description('SKU')
-param sku string = 'F1'
+@description('Name of the operation insights')
+param operationalName string = 'app-cnt-operational-insights'
 
-@description('Name of the website')
-@maxLength(30)
-param webSiteName string = 'gdb-project'
+@description('Name of the env')
+param envName string
 
-@allowed([ 'NODE|16-lts', 'NODE|18-lts' ])
-@description('Version of the linux runtime')
-param linuxVer string = 'NODE|18-lts'
+@description('Name of the container')
+param containerName string = 'app-cnt'
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
-  name: appServicePlanName
+@description('Backend URL')
+@secure()
+param backendUrl string = ''
+
+resource operationalInsights 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
+  name: operationalName
   location: location
   properties: {
-    reserved: true
+    sku: {
+      name: 'Free'
+    }
   }
-  sku: {
-    name: sku
-  }
-  kind: 'linux'
 }
 
-resource appService 'Microsoft.Web/sites@2022-03-01' = {
-  name: webSiteName
+resource env 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
+  name: envName
+}
+
+resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
+  name: containerName
   location: location
   properties: {
-    serverFarmId: appServicePlan.id
-    siteConfig: {
-      linuxFxVersion: linuxVer
+    managedEnvironmentId: env.id
+    configuration: {
+      registries: [
+        {
+          server: 'hub.docker.com'
+          username: 'pioptak'
+        }
+      ]
+      ingress: {
+        external: true
+        targetPort: 3000
+      }
+    }
+    template: {
+      containers: [
+        {
+          image: 'pioptak/gdb-frontend'
+          name: 'gdb-frontend'
+          env: [
+            {
+              name: 'REACT_APP_BACKEND_URL'
+              value: backendUrl
+            }
+          ]
+        }
+      ]
+      scale: {
+        minReplicas: 0
+        maxReplicas: 1
+      }
     }
   }
 }
